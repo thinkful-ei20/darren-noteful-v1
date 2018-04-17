@@ -8,17 +8,16 @@ const notes = simDB.initialize(data); // <<== and this
 
 console.log('Hello Noteful!');
 
-// INSERT EXPRESS APP CODE HERE...
 const express = require('express');
-const app = express();
+const app = express(); // creates express application
 const {PORT} = require('./config');
 const {logger} = require('./middleware/logger');
 
 
-app.use(logger);
+app.use(logger); // logs all requests
 
-app.use(express.static('public'));
-
+app.use(express.static('public')); // creates a static webserver
+app.use(express.json()); // parses request body
 
 app.get('/api/notes', (req, res, next) => {
 
@@ -74,9 +73,46 @@ app.get('/api/notes/:id', (req, res, next) => {
 });
 
 
-app.get('/boom', (req, res, next) => {
-  throw new Error('Boomshakalaka!!');
+
+
+
+app.put('/api/notes/:id', (req, res, next) => {
+  const id = req.params.id;
+
+  /***** Never trust users - validate input *****/
+  const updateObj = {};
+  const updateFields = ['title', 'content'];
+
+  updateFields.forEach(field => {
+    if (field in req.body) {
+      updateObj[field] = req.body[field];
+    }
+  });
+
+  notes.update(id, updateObj, (err, item) => {
+    if (err) {
+      return next(err);
+    }
+    if (item) {
+      res.json(item);
+    } else {
+      next();
+    }
+  });
 });
+
+
+
+
+
+
+
+
+
+
+// app.get('/boom', (req, res, next) => {
+//   throw new Error('Boomshakalaka!!');
+// });
 
 app.use(function (req, res, next) {
   var err = new Error('Not Found');
