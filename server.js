@@ -1,6 +1,10 @@
 'use strict';
 
+//Simple In-Memory Database
 const data = require('./db/notes');
+const simDB = require('./db/simDB');  // <<== add this
+const notes = simDB.initialize(data); // <<== and this
+
 
 console.log('Hello Noteful!');
 
@@ -16,32 +20,59 @@ app.use(logger);
 app.use(express.static('public'));
 
 
-app.get('/api/notes', (req, res) => {
+app.get('/api/notes', (req, res, next) => {
 
-  const searchTerm = req.query.searchTerm;
+  const {searchTerm} = req.query;
 
-  if(searchTerm) {
-    let filteredList = data.filter(function(item) {
-      return item.title.includes(searchTerm);
-    });
-    res.json(filteredList);
-  } else {
-    res.json(data);
-  }
+  notes.filter(searchTerm, (err, list) => {
+    if (err) {
+      return next(err); // goes to error handler
+    }
+    res.json(list); // responds with filtered array
+  });
+
+
+  // if(searchTerm) {
+  //   let filteredList = data.filter(function(item) {
+  //     return item.title.includes(searchTerm);
+  //   });
+  //   res.json(filteredList);
+  // } else {
+  //   res.json(data);
+  // }
  
 });
 
 
+// app.get('/api/notes/:id', (req, res, next) => {
+//   const id = +req.params.id;    
+//   const foundItem = data.find(item => item.id === id);
+
+//   if(foundItem) {
+//     res.json(foundItem);
+//   } else {
+//     next();
+//   }  
+// });
+
 app.get('/api/notes/:id', (req, res, next) => {
   const id = +req.params.id;    
   const foundItem = data.find(item => item.id === id);
+  // console.log(id);
+  // console.log(foundItem);
 
-  if(foundItem) {
-    res.json(foundItem);
-  } else {
-    next();
-  }  
+  notes.find(id, (err, foundItem) => {
+    if (err) {
+      return next(err);
+    }
+    if (foundItem) {
+      res.json(foundItem);
+    } else {
+      next();
+    }
+  });
 });
+
 
 app.get('/boom', (req, res, next) => {
   throw new Error('Boomshakalaka!!');
