@@ -12,7 +12,19 @@ const PORT = 8080;
 app.use(express.static('public'));
 
 app.get('/api/notes', (req, res) => {
-  res.json(data);
+
+  const searchTerm = req.query.searchTerm;
+
+  if(searchTerm) {
+    let filteredList = data.filter(function(item) {
+      return item.title.includes(searchTerm);
+    });
+    res.json(filteredList);
+  } else {
+    res.json(data);
+  }
+
+  // (searchTerm) ? data.filter(item =)
 });
 
 app.get('/api/notes/:id', (req, res) => {
@@ -20,10 +32,6 @@ app.get('/api/notes/:id', (req, res) => {
   const foundItem = data.find(item => item.id === id);
   res.json(foundItem);
 });
-
-
-
-
 
 
 app.listen(PORT, function () {
