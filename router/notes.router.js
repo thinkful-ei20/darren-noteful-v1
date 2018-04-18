@@ -9,7 +9,7 @@ const simDB = require('../db/simDB');  // <<== add this
 const notes = simDB.initialize(data); // <<== and this
 
 
-router.get('/api/notes', (req, res, next) => {
+router.get('/notes', (req, res, next) => {
 
   const {searchTerm} = req.query;
 
@@ -21,7 +21,7 @@ router.get('/api/notes', (req, res, next) => {
   }); 
 });
 
-router.get('/api/notes/:id', (req, res, next) => {
+router.get('/notes/:id', (req, res, next) => {
   const id = +req.params.id;    
   
   // console.log(id);
@@ -43,7 +43,7 @@ router.get('/api/notes/:id', (req, res, next) => {
 
 
 
-router.put('/api/notes/:id', (req, res, next) => {
+router.put('/notes/:id', (req, res, next) => {
   const id = req.params.id;
 
  

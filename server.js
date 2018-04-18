@@ -20,7 +20,7 @@ app.use(morgan('common'));
 app.use(express.static('public')); // creates a static webserver
 app.use(express.json()); // parses request body
 
-app.use(notesRouter);
+app.use('/api',notesRouter);
 
 
 
