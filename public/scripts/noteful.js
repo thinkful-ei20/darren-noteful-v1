@@ -135,6 +135,17 @@ const noteful = (function () {
     });
   }
 
+
+
+
+
+ 
+
+
+
+
+
+
   function bindEventListeners() {
     handleNoteItemClick();
     handleNoteSearchSubmit();
