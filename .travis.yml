@@ -1,2 +1,9 @@
 language: node_js
 node_js: node
+deploy:
+  provider: heroku
+  api_key:
+    secure: mUz/ovoogqI5Lq7br0Ri5AWPC536YGV/k/v8TNCMQ8oLYgFGN36xW9JOe3l3wSlKzdXdtZhmFiDzeWB46s6rpXss8EJSaVchxa/yLh3gxKv7Kc2ikNsUwtYClRFrt/brG3Jam8Nb60ny7zKocJH7k+mdBhtQYpK/9DEi96ymiojPe+oCG83DOnFwXArkGQQXTW2WF9STdmo7n8gTvs3fiDDRVKvqopxeEE5Q9jaM6DqilslfeLw4yXevInnGh2eqYPb7Be7OxU+Ea/Vv2868KsaBxmHXjkiKg35gQJfKqBlud7Nvg/IiuhuIqgYV21E5DBDnFplRu3NHNKNkFH9hmhYp1aEZU4t9GCwe0wGYTj7Lu4sSsxIc/9w8mHMQ2KOVgSXELDqEYRnEn9eM5jOPY4Uff/lcmlqwxcCpygHriBloE+YPHVCeJduhfHAkst/WLB0MS54juK6Pwp7HIbo+XFC7lF9yYva7ikPbkImi4XEtndAonpfjFKHfzWFX/Hrp6zuHeOl3hjaF/BN+Yk6hm1IJ85D62XoNJefMc43S5rdOOnOzIEyw3Rvlh16NgpMfGQzsyYd+md8kdZ4IcwH3R9/0lHggqEGy7c5NbEmiBuvyMt3JGY/fQk0uU5WiOz7BQrXzsJ3x1lRnmUyGn3BIV/vwC+gWPoNWcTtOJdqRG0Q=
+  app: testing-with-travis
+  on:
+    repo: thinkful-ei20/darren-noteful-v1
