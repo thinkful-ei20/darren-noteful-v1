@@ -60,7 +60,7 @@ describe('GET api/notes/:id',function(){
   });
   it('should respond with a 404 for an invalid id',function(){
     return chai.request(app)
-      .get('/api/notes/9999')
+      .get('/api/notes/99999')
       .then( res => {
         expect(res).to.have.status(404);
       });
