@@ -47,6 +47,22 @@ describe('404 handler', function () {
 
 });
 
+describe('GET /api/notes',function(){
+  it('should return feault of 10 notes as array', function(){
+    return chai.request(app)
+      .get('/api/notes')
+      .then(function(res) {
+        expect(res).to.exist;
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.be.an('array'); 
+        // expect(res.body).to.include.keys('id');  
+        expect(res.body).to.have.length(10); 
+      
+      });
+  });
+});
+
 describe('GET api/notes/:id',function(){
 
   it('should return correct note obj w/ id, title, and content for given id', function(){
@@ -55,7 +71,7 @@ describe('GET api/notes/:id',function(){
       .then(res => {
         expect(res).to.exist;
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
+        expect(res).to.be.json;        
       });
   });
   it('should respond with a 404 for an invalid id',function(){
