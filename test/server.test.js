@@ -21,6 +21,8 @@ describe('Reality Check', function() {
 
 });
 
+
+
 describe('Express static', function () {
 
   it('GET request "/" should return the index page', function () {
@@ -56,8 +58,15 @@ describe('GET /api/notes',function(){
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.be.an('array'); 
-        // expect(res.body).to.include.keys('id');  
-        expect(res.body).to.have.length(10); 
+        // expect(res.body[0]).to.include.keys('id','title','content');  
+        expect(res.body).to.have.length(10);
+        
+        const expectedNotesKeys = ['id','title','content'];
+        res.body.forEach(function(note){
+          expect(note).to.be.an('object');
+          expect(note).to.include.keys(expectedNotesKeys);
+        });
+
       
       });
   });
@@ -87,7 +96,10 @@ describe('GET api/notes/:id',function(){
 describe('POST /api.notes',function(){
 
   it('should create and return new item w/ location header and notify of missing title field',function(){
-    const noteTestPost = {title: 'Test Test', content: 'This is a test post body'};
+    const noteTestPost = {
+      title: 'Test Test',
+      content: 'This is a test post body'
+    };
     return chai.request(app)
       .post('/api/notes')
       .send(noteTestPost)
@@ -97,6 +109,96 @@ describe('POST /api.notes',function(){
         expect(res).to.be.an('object');
         expect(res.body).to.include.keys('id', 'title', 'content');
         expect(res.body.id).to.not.equal(null);
+        expect(res.body.title).to.equal(noteTestPost.title);
+        expect(res.body.content).to.equal(noteTestPost.content);
+        expect(res).to.have.header('location');
       });
   });
+
+  it('should notifiy of missing title field',function(){
+    const newNoteTestPost = {
+      'trash': 'notValid'
+    };
+    return chai.request(app)
+      .post('/api/notes')
+      .send(newNoteTestPost)
+      .catch(err => err.response)
+      .then(function(res){
+        expect(res).to.have.status(400);
+        expect(res).to.be.json;
+        expect(res.body).to.be.a('object');
+        expect(res.body.message).to.equal('Missing `title` in request body');
+      });
+  });
+});
+
+describe('PUT /api/notes/:id',function(){
+
+  it('should update and return note obj with PUT',function(){
+    const notesUpdateData = {
+      title: 'updatedata test title',
+      content: 'this talks about test cats'
+    };
+    return chai.request(app)
+      .put('/api/notes/1005')
+      .send(notesUpdateData)
+      .then(function(res){
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.be.a('object');
+        expect(res.body).to.include.keys('id', 'title', 'content');
+
+        expect(res.body.id).to.equal(1005);
+        expect(res.body.title).to.equal(notesUpdateData.title);
+        expect(res.body.content).to.equal(notesUpdateData.content);
+      });
+  });
+
+  it('should respond with a 404 for an invalid id',function(){
+    const notesUpdateData = {
+      title: 'updatedata test title',
+      content: 'this talks about test cats'
+    };
+
+    return chai.request(app)
+      .put('/api/notes/99999')
+      .send(notesUpdateData)
+      .catch(function(err){
+        return err.response;
+      })
+      .then( res => {
+        expect(res).to.have.status(404);
+      });
+  });
+
+  // it('should notifiy of missing title field',function(){
+  //   const notesUpdateData = {
+  //     title: 'updatedata test title',
+  //     content: 'this talks about test cats'      
+  //   };
+  //   return chai.request(app)
+  //     .put('/api/notes/1004')
+  //     .send(notesUpdateData)
+  //     .catch(err => err.response)
+  //     .then(function(res){
+  //       expect(res).to.have.status(400);
+  //       expect(res).to.be.json;
+  //       expect(res.body).to.be.a('object');
+  //       expect(res.body.message).to.equal('Missing `title` in request body');
+  //     });
+  // });
+
+});
+
+
+describe('DELETE  /api/notes/:id', function () {
+
+  it('should delete an item by id', function () {
+    return chai.request(app)
+      .delete('/api/notes/1005')
+      .then(function (res) {
+        expect(res).to.have.status(204);
+      });
+  });
+
 });
