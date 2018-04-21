@@ -83,3 +83,20 @@ describe('GET api/notes/:id',function(){
   });
 
 });
+
+describe('POST /api.notes',function(){
+
+  it('should create and return new item w/ location header and notify of missing title field',function(){
+    const noteTestPost = {title: 'Test Test', content: 'This is a test post body'};
+    return chai.request(app)
+      .post('/api/notes')
+      .send(noteTestPost)
+      .then(function(res){
+        expect(res).to.have.status(201);
+        expect(res).to.be.json;
+        expect(res).to.be.an('object');
+        expect(res.body).to.include.keys('id', 'title', 'content');
+        expect(res.body.id).to.not.equal(null);
+      });
+  });
+});
